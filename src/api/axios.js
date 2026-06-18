@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://eco-wise-ai-backend.vercel.app/';
+const API_URL = import.meta.env.VITE_API_URL || 'https://eco-wise-ai-backend.vercel.app/api/v1';
 
 import axios from 'axios';
 
