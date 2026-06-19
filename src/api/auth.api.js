@@ -25,6 +25,21 @@ export const onboarding = async (profileData) => {
   return response.data;
 };
 
+export const getOnboardingProgress = async () => {
+  const response = await api.get('/onboarding');
+  return response.data;
+};
+
+export const saveOnboardingProgress = async (profileData) => {
+  const response = await api.put('/onboarding', profileData);
+  return response.data;
+};
+
+export const completeOnboardingProgress = async (profileData) => {
+  const response = await api.post('/onboarding/complete', profileData);
+  return response.data;
+};
+
 export const updateProfile = async (profileData) => {
   const response = await api.put('/user/profile', profileData);
   return response.data;
