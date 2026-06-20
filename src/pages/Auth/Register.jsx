@@ -36,7 +36,7 @@ export const Register = () => {
 
       <Card className="w-full max-w-md border border-green-500/15">
         <div className="text-center mb-8">
-          <span className="text-4xl">🌿</span>
+          <span className="text-4xl" role="img" aria-label="EcoWise logo">🌿</span>
           <h2 className="text-2xl font-black mt-3 text-text-primary">Get Started</h2>
           <p className="text-sm font-semibold text-text-muted mt-1">
             Create your account to unlock personalized insights
@@ -44,13 +44,13 @@ export const Register = () => {
         </div>
 
         {errorMsg && (
-          <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-6">
+          <div role="alert" aria-live="assertive" className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-6">
             <ShieldAlert size={18} />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate aria-label="Registration Form">
           <Input
             label="Your Name"
             placeholder="John Doe"
@@ -71,7 +71,7 @@ export const Register = () => {
             type="password"
             placeholder="Min 6 characters"
             error={errors.password?.message}
-            {...register('password', { 
+            {...register('password', {
               required: 'Password is required',
               minLength: { value: 6, message: 'Password must be at least 6 characters' }
             })}
@@ -82,13 +82,13 @@ export const Register = () => {
             type="password"
             placeholder="••••••••"
             error={errors.confirmPassword?.message}
-            {...register('confirmPassword', { 
+            {...register('confirmPassword', {
               required: 'Confirm password is required',
               validate: (val) => val === passwordVal || 'Passwords do not match'
             })}
           />
 
-          <Button type="submit" variant="primary" size="lg" className="w-full mt-2" disabled={loading}>
+          <Button type="submit" variant="primary" size="lg" className="w-full mt-2" disabled={loading} aria-disabled={loading} aria-busy={loading}>
             {loading ? 'Creating Account...' : 'Create Account'}
           </Button>
         </form>

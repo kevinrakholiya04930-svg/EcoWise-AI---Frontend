@@ -25,14 +25,14 @@ export const Navbar = ({ title }) => {
   const progressPercent = Math.min(100, Math.max(0, (progressPoints / range) * 100));
 
   return (
-    <header className="h-20 bg-bg-primary border-b border-green-500/10 flex items-center justify-between px-8 sticky top-0 z-40 backdrop-blur-md bg-opacity-70">
+    <header aria-label="Page header" className="h-20 bg-bg-primary border-b border-green-500/10 flex items-center justify-between px-8 sticky top-0 z-40 backdrop-blur-md bg-opacity-70" role="banner" aria-label="Navigation Bar">
       {/* Title */}
       <h2 className="text-xl font-bold text-text-primary">
         {title}
       </h2>
 
       {/* Gamification indicators */}
-      <div className="flex items-center gap-6">
+      <nav className="flex items-center gap-6" aria-label="User progress information">
         {/* Streak */}
         <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3.5 py-1.5 rounded-xl text-amber-500 font-bold text-sm shadow-sm">
           <Flame size={18} fill="currentColor" />
@@ -58,7 +58,7 @@ export const Navbar = ({ title }) => {
             />
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 };

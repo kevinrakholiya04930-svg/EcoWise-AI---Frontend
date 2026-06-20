@@ -36,7 +36,7 @@ export const AppLayout = ({ children }) => {
         <Navbar title={title} />
 
         {/* Content Wrapper */}
-        <main className="flex-1 overflow-y-auto p-8 no-scrollbar">
+        <main aria-label={title} id="main-content" className="flex-1 overflow-y-auto p-8 no-scrollbar">
           {children}
         </main>
       </div>

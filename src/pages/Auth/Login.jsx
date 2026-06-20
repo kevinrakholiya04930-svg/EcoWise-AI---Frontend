@@ -33,13 +33,13 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary text-text-primary flex items-center justify-center p-4 relative overflow-hidden">
+    <main id="main-content" className="min-h-screen bg-bg-primary text-text-primary flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background circles */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-accent-green/5 blur-[100px] pointer-events-none" />
 
       <Card className="w-full max-w-md border border-green-500/15">
         <div className="text-center mb-8">
-          <span className="text-4xl">🌿</span>
+          <span className="text-4xl" role="img" aria-label="EcoWise logo">🌿</span>
           <h2 className="text-2xl font-black mt-3 text-text-primary">Welcome Back</h2>
           <p className="text-sm font-semibold text-text-muted mt-1">
             Access your EcoWise companion
@@ -47,13 +47,13 @@ export const Login = () => {
         </div>
 
         {errorMsg && (
-          <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-6">
+          <div role="alert" aria-live="assertive" className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-6">
             <ShieldAlert size={18} />
             <span>{errorMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5" noValidate aria-label="Login Form">
           <Input
             label="Email Address"
             type="email"
@@ -70,7 +70,7 @@ export const Login = () => {
             {...register('password', { required: 'Password is required' })}
           />
 
-          <Button type="submit" variant="primary" size="lg" className="w-full mt-2" disabled={loading}>
+          <Button type="submit" aria-busy={loading} aria-disabled={loading} variant="primary" size="lg" className="w-full mt-2" disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In'}
           </Button>
         </form>
@@ -82,7 +82,7 @@ export const Login = () => {
           </Link>
         </p>
       </Card>
-    </div>
+    </main>
   );
 };
 export default Login;

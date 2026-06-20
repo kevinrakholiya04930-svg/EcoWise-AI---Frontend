@@ -119,12 +119,12 @@ export const Dashboard = () => {
 
   return (
     <AppLayout>
-      <div className="flex flex-col gap-8">
+      <main id="main-content" className="flex flex-col gap-8" aria-labelledby="dashboard-heading">
         
         {/* Top welcome row */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-black text-text-primary">
+            <h1 id="dashboard-heading" className="text-3xl font-black text-text-primary">
               Welcome back, {user.name}!
             </h1>
             <p className="text-sm font-semibold text-text-muted mt-1">
@@ -138,7 +138,7 @@ export const Dashboard = () => {
         </div>
 
         {logSuccess && (
-          <div className="bg-green-500/10 border border-green-500/25 text-accent-green px-5 py-4 rounded-2xl text-sm font-bold flex items-center gap-3">
+          <div role="status" aria-live="polite" className="bg-green-500/10 border border-green-500/25 text-accent-green px-5 py-4 rounded-2xl text-sm font-bold flex items-center gap-3">
             <span>🎉 Weekly log entry registered! Streaks updated, green points awarded!</span>
           </div>
         )}
@@ -489,7 +489,7 @@ export const Dashboard = () => {
           </form>
         </Modal>
 
-      </div>
+      </main>
     </AppLayout>
   );
 };

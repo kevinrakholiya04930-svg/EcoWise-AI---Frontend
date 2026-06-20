@@ -85,83 +85,85 @@ function App() {
     <Router>
       <AuthProvider>
         <AppProvider>
-          <Routes>
-            {/* Public landing */}
-            <Route path="/" element={<Landing />} />
+          <main id="main-content" className="min-h-screen" aria-label="EcoWise Application">
+            <Routes>
+              {/* Public landing */}
+              <Route path="/" element={<Landing />} />
 
-            {/* Auth */}
-            <Route 
-              path="/login" 
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              } 
-            />
-            <Route 
-              path="/register" 
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              } 
-            />
+              {/* Auth */}
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <Register />
+                  </PublicRoute>
+                }
+              />
 
-            {/* Onboarding */}
-            <Route 
-              path="/onboarding" 
-              element={
-                <OnboardingRoute>
-                  <Onboarding />
-                </OnboardingRoute>
-              } 
-            />
+              {/* Onboarding */}
+              <Route
+                path="/onboarding"
+                element={
+                  <OnboardingRoute>
+                    <Onboarding />
+                  </OnboardingRoute>
+                }
+              />
 
-            {/* Protected dashboard and features */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/coach" 
-              element={
-                <ProtectedRoute>
-                  <Coach />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/simulator" 
-              element={
-                <ProtectedRoute>
-                  <Simulator />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/achievements" 
-              element={
-                <ProtectedRoute>
-                  <Achievements />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
+              {/* Protected dashboard and features */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/coach"
+                element={
+                  <ProtectedRoute>
+                    <Coach />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/simulator"
+                element={
+                  <ProtectedRoute>
+                    <Simulator />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/achievements"
+                element={
+                  <ProtectedRoute>
+                    <Achievements />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Fallback redirection */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+              {/* Fallback redirection */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
         </AppProvider>
       </AuthProvider>
     </Router>

@@ -84,6 +84,7 @@ export const GoalStep = ({
       className="flex w-full flex-col gap-6"
       onSubmit={handleSubmit(handleValidSubmit)}
       noValidate
+      aria-label="Choose sustainability goal"
     >
       <div>
         <h2 className="text-2xl font-black text-text-primary">Choose your first goal</h2>
@@ -92,10 +93,13 @@ export const GoalStep = ({
         </p>
       </div>
 
-      <fieldset className="flex flex-col gap-3">
+      <fieldset className="flex flex-col gap-3" aria-describedby="goal-description">
         <legend className="text-sm font-medium text-text-secondary">
           Primary goal
         </legend>
+        <p id="goal-description" className="sr-only" aria-live="polite">
+          Select the sustainability goal that matters most to you.
+        </p>
         <div className="grid gap-3 sm:grid-cols-2">
           {goals.map((goal) => (
             <GoalCard

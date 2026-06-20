@@ -58,11 +58,11 @@ export const Onboarding = () => {
 
   // Live calculation preview
   const liveEmissions = calculateEmissions(formValues);
-  const tempPersona = liveEmissions.score < 25 ? 'green-pioneer' : 
-                      formValues.monthlyElectricityKwh > 240 ? 'energy-consumer' :
-                      formValues.transportMode === 'car' && formValues.dailyTravelKm > 10 ? 'daily-commuter' :
-                      formValues.dailyDigitalHours > 6 ? 'digital-nomad' :
-                      formValues.dietType === 'meat-heavy' ? 'meat-lover' : 'green-pioneer';
+  const tempPersona = liveEmissions.score < 25 ? 'green-pioneer' :
+    formValues.monthlyElectricityKwh > 240 ? 'energy-consumer' :
+      formValues.transportMode === 'car' && formValues.dailyTravelKm > 10 ? 'daily-commuter' :
+        formValues.dailyDigitalHours > 6 ? 'digital-nomad' :
+          formValues.dietType === 'meat-heavy' ? 'meat-lover' : 'green-pioneer';
 
   const personaDetails = getPersonaDetails(tempPersona);
 
@@ -74,8 +74,8 @@ export const Onboarding = () => {
       <div className="absolute top-10 left-10 w-96 h-96 bg-accent-green/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent-lime/5 blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-2xl flex flex-col gap-6 relative z-10">
-        
+      <main id="onboarding-content" className="w-full max-w-2xl flex flex-col gap-6 relative z-10">
+
         {/* Onboarding Header / Step Progress */}
         <div className="flex flex-col gap-2.5">
           <div className="flex justify-between items-center text-sm font-bold text-text-secondary">
@@ -83,7 +83,12 @@ export const Onboarding = () => {
             <span>Step {step} of {stepsCount}</span>
           </div>
           <div className="w-full h-1.5 bg-bg-elevated rounded-full overflow-hidden border border-green-500/5">
-            <div 
+            <div
+              role="progressbar"
+              aria-valuemin={1}
+              aria-valuemax={stepsCount}
+              aria-valuenow={step}
+              aria-label={`Step ${step} of ${stepsCount}`}
               className="h-full bg-accent-green transition-all duration-300"
               style={{ width: `${(step / stepsCount) * 100}%` }}
             />
@@ -121,6 +126,7 @@ export const Onboarding = () => {
                     <select
                       className="bg-bg-primary border border-green-500/20 rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-accent-green"
                       {...register('country')}
+                      aria-label="Select your country"
                     >
                       <option value="IN">India</option>
                       <option value="US">United States</option>
@@ -166,11 +172,10 @@ export const Onboarding = () => {
                           key={mode.id}
                           type="button"
                           onClick={() => setValue('transportMode', mode.id)}
-                          className={`py-3.5 px-2 text-center rounded-xl border text-sm font-bold transition-all duration-200 ${
-                            formValues.transportMode === mode.id
-                              ? 'border-accent-green bg-accent-green/10 text-text-primary'
-                              : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
-                          }`}
+                          className={`py-3.5 px-2 text-center rounded-xl border text-sm font-bold transition-all duration-200 ${formValues.transportMode === mode.id
+                            ? 'border-accent-green bg-accent-green/10 text-text-primary'
+                            : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
+                            }`}
                         >
                           {mode.label}
                         </button>
@@ -186,6 +191,7 @@ export const Onboarding = () => {
                       </div>
                       <input
                         type="range"
+                        aria-label="Daily travel distance in kilometers"
                         min="0"
                         max="100"
                         className="w-full accent-accent-green bg-bg-elevated h-2 rounded-lg"
@@ -225,6 +231,7 @@ export const Onboarding = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Monthly electricity consumption in kilowatt hours"
                       min="10"
                       max="1000"
                       step="10"
@@ -245,6 +252,7 @@ export const Onboarding = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Household size"
                       min="1"
                       max="8"
                       className="w-full accent-accent-green bg-bg-elevated h-2 rounded-lg"
@@ -289,11 +297,10 @@ export const Onboarding = () => {
                           key={diet.id}
                           type="button"
                           onClick={() => setValue('dietType', diet.id)}
-                          className={`py-3 px-1.5 text-center rounded-xl border text-sm font-bold transition-all duration-200 ${
-                            formValues.dietType === diet.id
-                              ? 'border-accent-green bg-accent-green/10 text-text-primary'
-                              : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
-                          }`}
+                          className={`py-3 px-1.5 text-center rounded-xl border text-sm font-bold transition-all duration-200 ${formValues.dietType === diet.id
+                            ? 'border-accent-green bg-accent-green/10 text-text-primary'
+                            : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
+                            }`}
                         >
                           {diet.label}
                         </button>
@@ -340,7 +347,7 @@ export const Onboarding = () => {
                   </div>
 
                   {/* Calculated Persona Badge */}
-                  <div className="flex items-center gap-4 bg-bg-primary/50 border border-green-500/10 p-5 rounded-2xl">
+                  <div role="status" aria-label="polite" className="flex items-center gap-4 bg-bg-primary/50 border border-green-500/10 p-5 rounded-2xl">
                     <span className="text-5xl">{personaDetails.emoji}</span>
                     <div>
                       <span className="text-xs font-black tracking-widest text-accent-green uppercase">YOUR PERSONA</span>
@@ -369,6 +376,7 @@ export const Onboarding = () => {
                     <select
                       className="bg-bg-primary border border-green-500/20 rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-accent-green"
                       {...register('goalType')}
+                      aria-label="Choose sustainability goal"
                     >
                       <option value="awareness">Awareness Only (Track footprint first)</option>
                       <option value="reduce25">Moderate Reducer (Cut emissions 25%)</option>
@@ -383,6 +391,8 @@ export const Onboarding = () => {
                       variant="primary"
                       type="submit"
                       disabled={submitting}
+                      aria-disabled={submitting}
+                      aria-busy={submitting}
                       className="!px-8 bg-gradient-to-r from-accent-green to-accent-lime text-bg-primary font-black text-base"
                     >
                       {submitting ? 'Calibrating...' : 'Complete & Generate Dashboard'}
@@ -393,7 +403,7 @@ export const Onboarding = () => {
             )}
           </AnimatePresence>
         </form>
-      </div>
+      </main>
     </div>
   );
 };
