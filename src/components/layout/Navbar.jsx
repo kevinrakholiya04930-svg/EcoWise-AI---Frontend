@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Flame, Award, Zap } from 'lucide-react';
 
@@ -18,11 +18,22 @@ export const Navbar = ({ title }) => {
 
   const { greenPoints = 0, level = 1, currentStreak = 0 } = user.gamification || {};
   const currentLevelInfo = LEVEL_THRESHOLDS[level] || LEVEL_THRESHOLDS[1];
-  
+
   // Calculate level progress percentage
   const range = currentLevelInfo.max - currentLevelInfo.min;
   const progressPoints = greenPoints - currentLevelInfo.min;
-  const progressPercent = Math.min(100, Math.max(0, (progressPoints / range) * 100));
+  const progressPercent = useMemo(() => {
+    const range =
+      currentLevelInfo.max - currentLevelInfo.min;
+
+    const progressPoints =
+      greenPoints - currentLevelInfo.min;
+
+    return Math.min(
+      100,
+      Math.max(0, (progressPoints / range) * 100)
+    );
+  }, [greenPoints, currentLevelInfo]);
 
   return (
     <header aria-label="Page header" className="h-20 bg-bg-primary border-b border-green-500/10 flex items-center justify-between px-8 sticky top-0 z-40 backdrop-blur-md bg-opacity-70" role="banner" aria-label="Navigation Bar">
@@ -52,8 +63,8 @@ export const Navbar = ({ title }) => {
             <span>Lvl {level}</span>
           </div>
           <div className="w-full h-2 bg-bg-elevated rounded-full overflow-hidden border border-green-500/5">
-            <div 
-              className="h-full bg-gradient-to-r from-accent-green to-accent-lime transition-all duration-500" 
+            <div
+              className="h-full bg-gradient-to-r from-accent-green to-accent-lime transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>

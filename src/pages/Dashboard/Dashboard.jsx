@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
 import { Card } from '../../components/ui/Card';
@@ -37,7 +37,7 @@ export const Dashboard = () => {
 
   const modalFormValues = watch();
 
-  const handleOpenModal = () => {
+  const handleOpenModal = useCallback(() => {
     // Autopopulate week with current ISO week or defaults
     const today = new Date();
     const year = today.getFullYear();
@@ -45,7 +45,7 @@ export const Dashboard = () => {
     const numberOfDays = Math.floor((today - oneJan) / (24 * 60 * 60 * 1000));
     const weekNum = Math.ceil((today.getDay() + 1 + numberOfDays) / 7);
     const defaultWeek = `${year}-W${weekNum < 10 ? '0' + weekNum : weekNum}`;
-    
+
     reset({
       week: defaultWeek,
       transportMode: user?.profile?.transportMode || 'walking',
@@ -55,9 +55,9 @@ export const Dashboard = () => {
       dailyDigitalHours: user?.profile?.dailyDigitalHours || 4,
     });
     setIsLogModalOpen(true);
-  };
+  }, [reset, user]);
 
-  const handleLogSubmit = async (data) => {
+  const handleLogSubmit = useCallback(async (data) => {
     try {
       await addWeeklyLog(data.week, {
         transportMode: data.transportMode,
@@ -72,14 +72,17 @@ export const Dashboard = () => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [addWeeklyLog]);
 
   if (!user) return null;
 
   const profile = user.profile || {};
 
   // Persona Details
-  const personaDetails = getPersonaDetails(user.persona);
+  const personaDetails = useMemo(
+    () => getPersonaDetails(user.persona),
+    [user.persona]
+  );
 
   // Active Carbon Metrics
   const activeEmissions = summary ? summary.emissions : null;
@@ -88,39 +91,56 @@ export const Dashboard = () => {
   const treesRequired = summary ? summary.treesRequired : 0;
 
   // Emotional Equivalents
-  const equivalents = getEquivalents(totalEmissions);
+  const equivalents = useMemo(
+    () => getEquivalents(totalEmissions),
+    [totalEmissions]
+  );
 
   // Benchmarks comparison
-  const benchmark = getBenchmarkForCountry(profile.country || 'IN');
+  const benchmark = useMemo(
+    () => getBenchmarkForCountry(profile.country || 'IN'),
+    [profile.country]
+  );
   const userPercentOfNational = benchmark.national > 0 ? Math.round((totalEmissions / benchmark.national) * 100) : 0;
 
   // Today's Action Card
-  let todaysAction = {
-    title: "Switch off standby power today",
-    saving: "0.4 kg CO₂",
-    description: "Leaving computer monitors or TVs on standby draws trickle power. Switch off at the wall."
-  };
-  if (user.persona === 'daily-commuter') {
-    todaysAction = {
-      title: "Walk or cycle for a trip under 3km",
-      saving: "1.2 kg CO₂",
-      description: "Avoid taking the car out for quick neighborhood errands. Go analog instead."
+  const todaysAction = useMemo(() => {
+    if (user.persona === 'daily-commuter') {
+      return {
+        title: 'Walk or cycle for a trip under 3km',
+        saving: '1.2 kg CO₂',
+        description:
+          'Avoid taking the car out for quick neighborhood errands. Go analog instead.',
+      };
+    }
+
+    if (user.persona === 'meat-lover') {
+      return {
+        title: 'Enjoy a plant-based dinner',
+        saving: '2.3 kg CO₂',
+        description:
+          'Replace chicken/beef with lentils or mushrooms tonight. Healthy and green!',
+      };
+    }
+
+    return {
+      title: 'Switch off standby power today',
+      saving: '0.4 kg CO₂',
+      description:
+        'Leaving computer monitors or TVs on standby draws trickle power. Switch off at the wall.',
     };
-  } else if (user.persona === 'meat-lover') {
-    todaysAction = {
-      title: "Enjoy a plant-based dinner",
-      saving: "2.3 kg CO₂",
-      description: "Replace chicken/beef with lentils or mushrooms tonight. Healthy and green!"
-    };
-  }
+  }, [user.persona]);
 
   // Calculate live emissions inside log modal
-  const liveModalEmissions = calculateEmissions(modalFormValues);
+  const liveModalEmissions = useMemo(
+    () => calculateEmissions(modalFormValues),
+    [modalFormValues]
+  );
 
   return (
     <AppLayout>
       <main id="main-content" className="flex flex-col gap-8" aria-labelledby="dashboard-heading">
-        
+
         {/* Top welcome row */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -145,7 +165,7 @@ export const Dashboard = () => {
 
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
+
           {/* Carbon Persona Summary */}
           <Card className="lg:col-span-2 flex flex-col sm:flex-row items-center gap-6 border border-green-500/10 bg-gradient-to-r from-bg-surface to-bg-elevated/40">
             <span className="text-7xl sm:text-8xl">{personaDetails.emoji}</span>
@@ -268,7 +288,7 @@ export const Dashboard = () => {
               <h3 className="text-lg font-bold text-text-primary">Peer Benchmarks Comparison</h3>
               <p className="text-xs text-text-muted mt-0.5 font-semibold">Your footprint vs averages (kg CO₂/mo)</p>
             </div>
-            
+
             <div className="flex-1 mt-6 flex flex-col gap-4">
               {[
                 { label: 'Your Footprint', value: totalEmissions, color: 'bg-accent-green', max: 500 },
@@ -284,8 +304,8 @@ export const Dashboard = () => {
                       <span className="font-bold text-text-primary font-mono">{bar.value} kg</span>
                     </div>
                     <div className="w-full h-3 bg-bg-primary rounded-lg overflow-hidden">
-                      <div 
-                        className={`h-full rounded-lg transition-all duration-500 ${bar.color}`} 
+                      <div
+                        className={`h-full rounded-lg transition-all duration-500 ${bar.color}`}
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -303,8 +323,8 @@ export const Dashboard = () => {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {equivalents.map((eq) => (
-              <div 
-                key={eq.id} 
+              <div
+                key={eq.id}
                 className={`bg-gradient-to-br ${eq.color} border border-green-500/10 p-5 rounded-2xl flex flex-col justify-between gap-4`}
               >
                 <div className="flex justify-between items-start">
@@ -345,7 +365,7 @@ export const Dashboard = () => {
               <h3 className="text-lg font-bold text-text-primary">Recent Logs</h3>
               <p className="text-xs text-text-muted mt-0.5 font-semibold">Weekly entries recorded</p>
             </div>
-            
+
             <div className="flex-1 mt-6 flex flex-col gap-3 overflow-y-auto max-h-[220px] no-scrollbar">
               {history.length > 0 ? (
                 history.map((hist, idx) => (
@@ -367,8 +387,8 @@ export const Dashboard = () => {
         </div>
 
         {/* Weekly Log Modal */}
-        <Modal 
-          isOpen={isLogModalOpen} 
+        <Modal
+          isOpen={isLogModalOpen}
           onClose={() => setIsLogModalOpen(false)}
           title="Log Weekly Emissions"
         >
@@ -395,11 +415,10 @@ export const Dashboard = () => {
                     key={mode.id}
                     type="button"
                     onClick={() => setValue('transportMode', mode.id)}
-                    className={`py-2 text-center rounded-xl border text-[10px] font-black transition-all duration-200 ${
-                      modalFormValues.transportMode === mode.id
-                        ? 'border-accent-green bg-accent-green/10 text-text-primary'
-                        : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
-                    }`}
+                    className={`py-2 text-center rounded-xl border text-[10px] font-black transition-all duration-200 ${modalFormValues.transportMode === mode.id
+                      ? 'border-accent-green bg-accent-green/10 text-text-primary'
+                      : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
+                      }`}
                   >
                     {mode.label}
                   </button>
@@ -451,11 +470,10 @@ export const Dashboard = () => {
                     key={diet.id}
                     type="button"
                     onClick={() => setValue('dietType', diet.id)}
-                    className={`py-2 text-center rounded-xl border text-[10px] font-black transition-all duration-200 ${
-                      modalFormValues.dietType === diet.id
-                        ? 'border-accent-green bg-accent-green/10 text-text-primary'
-                        : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
-                    }`}
+                    className={`py-2 text-center rounded-xl border text-[10px] font-black transition-all duration-200 ${modalFormValues.dietType === diet.id
+                      ? 'border-accent-green bg-accent-green/10 text-text-primary'
+                      : 'border-green-500/10 hover:bg-bg-elevated text-text-muted'
+                      }`}
                   >
                     {diet.label}
                   </button>

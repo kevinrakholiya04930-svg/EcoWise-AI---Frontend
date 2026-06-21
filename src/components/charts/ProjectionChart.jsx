@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export const ProjectionChart = ({ projections = {} }) => {
   const { currentTrajectory = [], goalTrajectory = [], optimisticTrajectory = [], labels = [] } = projections;
 
-  const chartData = labels.map((label, idx) => ({
-    week: label,
-    'Current Path': currentTrajectory[idx] || 0,
-    'Reduction Goal': goalTrajectory[idx] || 0,
-    'Optimistic Path': optimisticTrajectory[idx] || 0
-  }));
+  const chartData = useMemo(
+  () =>
+    labels.map((label, idx) => ({
+      week: label,
+      'Current Path': currentTrajectory[idx] || 0,
+      'Reduction Goal': goalTrajectory[idx] || 0,
+      'Optimistic Path': optimisticTrajectory[idx] || 0,
+    })),
+  [labels, currentTrajectory, goalTrajectory, optimisticTrajectory]
+);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {

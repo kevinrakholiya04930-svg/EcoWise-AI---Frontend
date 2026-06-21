@@ -2,12 +2,12 @@ import React from 'react';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const CategoryBar = ({ data = {} }) => {
-  const chartData = [
+  const chartData = useMemo(() => [
     { name: 'Transport', value: data.transportation || 0, fill: '#22c55e' },
     { name: 'Energy', value: data.electricity || 0, fill: '#eab308' },
     { name: 'Food', value: data.food || 0, fill: '#ef4444' },
     { name: 'Digital', value: data.digital || 0, fill: '#6366f1' },
-  ];
+  ], [data]);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -32,13 +32,13 @@ export const CategoryBar = ({ data = {} }) => {
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(74, 222, 128, 0.05)" />
-          <XAxis 
-            dataKey="name" 
-            stroke="rgba(74, 222, 128, 0.3)" 
+          <XAxis
+            dataKey="name"
+            stroke="rgba(74, 222, 128, 0.3)"
             tick={{ fill: '#86efac', fontSize: 11, fontWeight: 600 }}
           />
-          <YAxis 
-            stroke="rgba(74, 222, 128, 0.3)" 
+          <YAxis
+            stroke="rgba(74, 222, 128, 0.3)"
             tick={{ fill: '#86efac', fontSize: 11, fontWeight: 600 }}
           />
           <Tooltip content={<CustomTooltip />} />

@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react';
 import { useAuth } from './AuthContext';
 import { getSummary, getHistory, getProjection, logEntry } from '../api/carbon.api';
 import { getChallenges, joinChallenge as apiJoinChallenge, completeChallenge as apiCompleteChallenge } from '../api/gamification.api';
@@ -14,16 +20,16 @@ export const AppProvider = ({ children }) => {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const triggerConfetti = () => {
+  const triggerConfetti = useCallback(() => {
     confetti({
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#22c55e', '#10b981', '#84cc16']
+      colors: ['#22c55e', '#10b981', '#84cc16'],
     });
-  };
+  }, []);
 
-  const loadAllData = async () => {
+  const loadAllData = useCallback(async () => {
     if (!token || !user || !user.onboardingCompleted) return;
     setLoading(true);
     try {
@@ -42,13 +48,13 @@ export const AppProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, user]);
 
   useEffect(() => {
     loadAllData();
-  }, [token, user?.onboardingCompleted]);
+  }, [loadAllData]);
 
-  const addWeeklyLog = async (week, profile) => {
+  const addWeeklyLog = useCallback(async (week, profile) => {
     try {
       const res = await logEntry(week, profile);
       // Refresh user context and local data
@@ -59,9 +65,9 @@ export const AppProvider = ({ children }) => {
       console.error(err);
       throw err;
     }
-  };
+  }, [loadAllData, triggerConfetti]);
 
-  const enrollInChallenge = async (challengeId) => {
+  const enrollInChallenge = useCallback(async (challengeId) => {
     try {
       await apiJoinChallenge(challengeId);
       const chalRes = await getChallenges();
@@ -70,9 +76,9 @@ export const AppProvider = ({ children }) => {
       console.error(err);
       throw err;
     }
-  };
+  }, []);
 
-  const finishChallenge = async (challengeId) => {
+  const finishChallenge = useCallback(async (challengeId) => {
     try {
       const res = await apiCompleteChallenge(challengeId);
       const chalRes = await getChallenges();
@@ -83,7 +89,7 @@ export const AppProvider = ({ children }) => {
       console.error(err);
       throw err;
     }
-  };
+  }, [triggerConfetti]);
 
   return (
     <AppContext.Provider value={{

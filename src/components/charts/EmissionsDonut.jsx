@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 export const EmissionsDonut = ({ data = {} }) => {
-  const chartData = [
+  const chartData = useMemo(() => [
     { name: 'Transportation', value: data.transportation || 0, color: '#22c55e' },
     { name: 'Electricity', value: data.electricity || 0, color: '#eab308' },
     { name: 'Food', value: data.food || 0, color: '#ef4444' },
     { name: 'Digital', value: data.digital || 0, color: '#6366f1' },
-  ].filter(item => item.value > 0);
+  ].filter(item => item.value > 0), [data]);
 
-  const total = chartData.reduce((sum, item) => sum + item.value, 0);
+  const total = useMemo(
+    () => chartData.reduce((sum, item) => sum + item.value, 0),
+    [chartData]
+  );
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -45,15 +48,15 @@ export const EmissionsDonut = ({ data = {} }) => {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            verticalAlign="bottom" 
-            height={36} 
+          <Legend
+            verticalAlign="bottom"
+            height={36}
             iconType="circle"
             formatter={(value) => <span className="text-xs font-semibold text-text-muted">{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>
-      
+
       {/* Centered label */}
       <div className="absolute top-[38%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
         <span className="text-2xl font-extrabold text-text-primary font-mono">{total}</span>
